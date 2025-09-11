@@ -5,9 +5,7 @@ export default function Header({ className }) {
     <Box
       className={className}
       component={"div"}
-      sx={{ backgroundColor: "pink" }}
-    >
-      <Typography>Header</Typography>
-    </Box>
+      sx={{ backgroundColor: "#eeececff" }}
+    ></Box>
   );
 }
