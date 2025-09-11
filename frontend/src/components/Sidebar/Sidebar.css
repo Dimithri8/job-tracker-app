@@ -1,0 +1,9 @@
+.nav-link:hover {
+  background-color: #ffc965;
+  cursor: pointer;
+}
+.nav-link {
+  padding: 10px 20px;
+  background-color: rgb(238, 238, 238);
+  border-radius: 5px;
+}
