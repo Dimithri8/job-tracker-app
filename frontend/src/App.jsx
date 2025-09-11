@@ -1,6 +1,6 @@
-import Dashboard from "./pages/Dashboard/Dashboard";
+import Layout from "./components/Layout/Layout";
 function App() {
-  return <Dashboard />;
+  return <Layout />;
 }
 
 export default App;
