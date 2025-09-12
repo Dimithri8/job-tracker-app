@@ -1,9 +1,11 @@
-.nav-link:hover {
-  background-color: #ffc965;
+.nav-link.active {
+  background-color: #3498db;
+  color: white;
+  padding: 10px 20px;
   cursor: pointer;
+  border-radius: 5px;
 }
 .nav-link {
   padding: 10px 20px;
-  background-color: rgb(238, 238, 238);
   border-radius: 5px;
 }

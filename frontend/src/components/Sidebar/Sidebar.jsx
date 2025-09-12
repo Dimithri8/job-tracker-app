@@ -11,111 +11,115 @@ export default function Sidebar({ className }) {
     <Box
       className={className}
       component={"div"}
-      sx={{ backgroundColor: "white", padding: 3, boxShadow: 5 }}
+      sx={{
+        backgroundColor: "#2C3E50",
+        padding: 3,
+        boxShadow: 5,
+        color: "white",
+      }}
     >
       <Typography variant={"h1"} sx={{ fontSize: 20, fontWeight: 600, mb: 5 }}>
         Job Tracker
       </Typography>
-      <Box component={"div"}>
-        <nav>
-          <ul
-            style={{
-              listStyleType: "none",
-              display: "flex",
-              flexDirection: "column",
-              gap: 20,
+      <Box
+        component={"div"}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
+        }}
+      >
+        <NavLink
+          className={({ isActive }) =>
+            isActive ? "nav-link active" : "nav-link"
+          }
+          style={{
+            textDecoration: "none",
+            display: "flex",
+            gap: 5,
+            alignItems: "center",
+          }}
+          to={"/"}
+        >
+          <SpaceDashboardOutlinedIcon sx={{ color: "white" }} />
+          <Typography
+            sx={{
+              color: "white",
             }}
           >
-            <li className="nav-link">
-              <NavLink
-                style={{
-                  textDecoration: "none",
-                  display: "flex",
-                  gap: 5,
-                  alignItems: "center",
-                }}
-                to={"/"}
-              >
-                <SpaceDashboardOutlinedIcon sx={{ color: "black" }} />
-                <Typography
-                  sx={{
-                    color: "black",
-                    fontSize: 16,
-                    fontWeight: 500,
-                  }}
-                >
-                  Dashboard
-                </Typography>
-              </NavLink>
-            </li>
-            <li className="nav-link">
-              <NavLink
-                style={{
-                  textDecoration: "none",
-                  display: "flex",
-                  gap: 5,
-                  alignItems: "center",
-                }}
-                to={"/jobs"}
-              >
-                <WorkOutlineOutlinedIcon sx={{ color: "black" }} />
-                <Typography
-                  sx={{
-                    color: "black",
-                    fontSize: 16,
-                    fontWeight: 500,
-                  }}
-                >
-                  Jobs
-                </Typography>
-              </NavLink>
-            </li>
-            <li className="nav-link">
-              <NavLink
-                style={{
-                  textDecoration: "none",
-                  display: "flex",
-                  gap: 5,
-                  alignItems: "center",
-                }}
-                to={"/interviews"}
-              >
-                <GroupsOutlinedIcon sx={{ color: "black" }} />
-                <Typography
-                  sx={{
-                    color: "black",
-                    fontSize: 16,
-                    fontWeight: 500,
-                  }}
-                >
-                  Interviews
-                </Typography>
-              </NavLink>
-            </li>
-            <li className="nav-link">
-              <NavLink
-                style={{
-                  textDecoration: "none",
-                  display: "flex",
-                  gap: 5,
-                  alignItems: "center",
-                }}
-                to={"/analytics"}
-              >
-                <LeaderboardOutlinedIcon sx={{ color: "black" }} />
-                <Typography
-                  sx={{
-                    color: "black",
-                    fontSize: 16,
-                    fontWeight: 500,
-                  }}
-                >
-                  Analytics
-                </Typography>
-              </NavLink>
-            </li>
-          </ul>
-        </nav>
+            Dashboard
+          </Typography>
+        </NavLink>
+
+        <NavLink
+          className={({ isActive }) =>
+            isActive ? "nav-link active" : "nav-link"
+          }
+          style={{
+            textDecoration: "none",
+            display: "flex",
+            gap: 5,
+            alignItems: "center",
+          }}
+          to={"/jobs"}
+        >
+          <WorkOutlineOutlinedIcon sx={{ color: "white" }} />
+          <Typography
+            sx={{
+              color: "white",
+            }}
+          >
+            Jobs
+          </Typography>
+        </NavLink>
+
+        <NavLink
+          className={({ isActive }) =>
+            isActive ? "nav-link active" : "nav-link"
+          }
+          style={{
+            textDecoration: "none",
+            display: "flex",
+            gap: 5,
+            alignItems: "center",
+          }}
+          to={"/interviews"}
+        >
+          <GroupsOutlinedIcon sx={{ color: "white" }} />
+          <Typography
+            sx={{
+              color: "white",
+              fontSize: 16,
+              fontWeight: 500,
+            }}
+          >
+            Interviews
+          </Typography>
+        </NavLink>
+
+        <NavLink
+          className={({ isActive }) =>
+            isActive ? "nav-link active" : "nav-link"
+          }
+          style={{
+            textDecoration: "none",
+            display: "flex",
+            gap: 5,
+            alignItems: "center",
+          }}
+          to={"/analytics"}
+        >
+          <LeaderboardOutlinedIcon sx={{ color: "white" }} />
+          <Typography
+            sx={{
+              color: "white",
+              fontSize: 16,
+              fontWeight: 500,
+            }}
+          >
+            Analytics
+          </Typography>
+        </NavLink>
       </Box>
     </Box>
   );
