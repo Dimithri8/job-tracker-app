@@ -13,12 +13,14 @@ export default function Sidebar({ className }) {
       component={"div"}
       sx={{
         backgroundColor: "#2C3E50",
-        padding: 3,
         boxShadow: 5,
         color: "white",
       }}
     >
-      <Typography variant={"h1"} sx={{ fontSize: 20, fontWeight: 600, mb: 5 }}>
+      <Typography
+        variant={"h1"}
+        sx={{ fontSize: 20, fontWeight: 600, mb: 5, pt: 3, px: 3 }}
+      >
         Job Tracker
       </Typography>
       <Box
@@ -27,6 +29,7 @@ export default function Sidebar({ className }) {
           display: "flex",
           flexDirection: "column",
           gap: 2,
+          p: 3,
         }}
       >
         <NavLink
