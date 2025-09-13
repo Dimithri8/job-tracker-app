@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Button, Paper, Typography } from "@mui/material";
+import { Box, Button, Paper, TextField, Typography } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   Dialog,
@@ -98,7 +98,23 @@ export default function Header({ className }) {
       </Paper>
       <Dialog open={isSettingsOpen}>
         <DialogTitle>Profile</DialogTitle>
-        <DialogContent></DialogContent>
+        <DialogContent
+          sx={{ display: "flex", flexDirection: "column", gap: 1 }}
+        >
+          <Box
+            component={"input"}
+            type={"file"}
+            sx={{
+              padding: 3,
+              border: "1px solid rgba(0, 0, 0, 0.23)",
+              borderRadius: 1,
+            }}
+          />
+          <TextField type={"text"} label="First Name" variant={"standard"} />
+          <TextField type={"text"} label="Last Name" variant={"standard"} />
+          <TextField type={"email"} label="Email" variant={"standard"} />
+          <TextField type={"password"} label="Password" variant={"standard"} />
+        </DialogContent>
         <DialogActions>
           <Button
             onClick={handleExitSettings}
