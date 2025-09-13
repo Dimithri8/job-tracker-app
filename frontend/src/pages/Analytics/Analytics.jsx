@@ -1,5 +1,6 @@
 import { Box, Typography, Paper } from "@mui/material";
 import { PieChart, BarChart } from "@mui/x-charts";
+import MetricCard from "../../components/MetricCard/MetricCard";
 
 export default function Analytics() {
   const jobAppliedData = [
@@ -48,70 +49,10 @@ export default function Analytics() {
         component={"div"}
         sx={{ display: "flex", gap: 2, justifyContent: "flex-start", mt: 2 }}
       >
-        <Paper
-          sx={{
-            width: 200,
-            p: 2,
-            display: "flex",
-            flexDirection: "column",
-            gap: 1,
-          }}
-        >
-          <Typography variant={"h3"} sx={{ fontSize: 16 }}>
-            Total Applications
-          </Typography>
-          <Typography variant={"body1"} sx={{ fontWeight: 600 }}>
-            5
-          </Typography>
-        </Paper>
-        <Paper
-          sx={{
-            width: 200,
-            p: 2,
-            display: "flex",
-            flexDirection: "column",
-            gap: 1,
-          }}
-        >
-          <Typography variant={"h3"} sx={{ fontSize: 16 }}>
-            Total Interviews
-          </Typography>
-          <Typography variant={"body1"} sx={{ fontWeight: 600 }}>
-            5
-          </Typography>
-        </Paper>
-        <Paper
-          sx={{
-            width: 200,
-            p: 2,
-            display: "flex",
-            flexDirection: "column",
-            gap: 1,
-          }}
-        >
-          <Typography variant={"h3"} sx={{ fontSize: 16 }}>
-            Offers
-          </Typography>
-          <Typography variant={"body1"} sx={{ fontWeight: 600 }}>
-            5
-          </Typography>
-        </Paper>
-        <Paper
-          sx={{
-            width: 200,
-            p: 2,
-            display: "flex",
-            flexDirection: "column",
-            gap: 1,
-          }}
-        >
-          <Typography variant={"h3"} sx={{ fontSize: 16 }}>
-            Rejections
-          </Typography>
-          <Typography variant={"body1"} sx={{ fontWeight: 600 }}>
-            5
-          </Typography>
-        </Paper>
+        <MetricCard label={"Total Applications"} value={5} />
+        <MetricCard label={"Total Interviews"} value={5} />
+        <MetricCard label={"Offers"} value={5} />
+        <MetricCard label={"Rejections"} value={5} />
       </Box>
       <Box
         component={"div"}
