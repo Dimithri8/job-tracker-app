@@ -156,7 +156,7 @@ export default function Analytics() {
           <Box component={"div"}>
             <PieChart
               sx={{ display: "flex", flexDirection: "column-reverse" }}
-              height={300}
+              height={250}
               slotProps={{
                 legend: {
                   direction: "horizontal",
