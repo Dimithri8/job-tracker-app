@@ -1,12 +1,13 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { NavLink } from "react-router-dom";
 import SpaceDashboardOutlinedIcon from "@mui/icons-material/SpaceDashboardOutlined";
 import WorkOutlineOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined";
 import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
 import LeaderboardOutlinedIcon from "@mui/icons-material/LeaderboardOutlined";
+import LogoutIcon from "@mui/icons-material/Logout";
 import "./Sidebar.css";
 
-export default function Sidebar({ className }) {
+export default function Sidebar({ className, handleLogout }) {
   return (
     <Box
       className={className}
@@ -28,6 +29,7 @@ export default function Sidebar({ className }) {
         sx={{
           display: "flex",
           flexDirection: "column",
+
           gap: 2,
           p: 3,
         }}
@@ -123,6 +125,25 @@ export default function Sidebar({ className }) {
             Analytics
           </Typography>
         </NavLink>
+      </Box>
+      <Box sx={{ p: 3 }}>
+        <Button
+          onClick={handleLogout}
+          startIcon={<LogoutIcon />}
+          fullWidth
+          variant={"contained"}
+          type={"button"}
+          sx={{
+            py: "10px",
+            px: "20px",
+            display: "flex",
+            justifyContent: "start",
+            backgroundColor: "#0f1f2eff",
+            "&:hover": { backgroundColor: "#e43939" },
+          }}
+        >
+          Logout
+        </Button>
       </Box>
     </Box>
   );
