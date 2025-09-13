@@ -11,19 +11,35 @@ import {
 export default function Header({ className }) {
   const [isExpand, setIsExpand] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const user = {
+    profileImg: "src/assets/images/profile-img.avif",
+    firstName: "Dimithri",
+    lastName: "Dananjaya",
+    email: "dimithridananjaya924@gmail.com",
+    password: "dimithri.123",
+  };
+  const [userDetails, setUserDetails] = useState(user);
+  const [draftUser, setDraftUser] = useState(user);
+
   function handleProfileViewExpand() {
     setIsExpand((prevValue) => !prevValue);
   }
-  const user = {
-    profileImg: "src/assets/images/profile-img.avif",
-    username: "Dimithri Dananjaya",
-  };
+
   function handleOpenSettings() {
     setIsSettingsOpen((prevValue) => !prevValue);
   }
   function handleExitSettings() {
     handleOpenSettings();
     setIsExpand();
+  }
+  function handleChange(event) {
+    const { name, value } = event.target;
+    setDraftUser((prevDetails) => ({ ...prevDetails, [name]: value }));
+  }
+  function handleUpdateUser(e) {
+    e.preventDefault();
+    setUserDetails(draftUser);
+    handleExitSettings();
   }
   return (
     <>
@@ -54,7 +70,7 @@ export default function Header({ className }) {
         >
           <Box
             component={"img"}
-            src={user.profileImg}
+            src={userDetails.profileImg}
             sx={{
               height: 40,
               width: 40,
@@ -63,7 +79,7 @@ export default function Header({ className }) {
             }}
           />
           <Typography noWrap sx={{ fontSize: 14 }}>
-            {user.username}
+            {userDetails.firstName}
           </Typography>
           <ExpandMoreIcon
             sx={{ transform: isExpand ? "rotate(180deg)" : "none" }}
@@ -98,22 +114,58 @@ export default function Header({ className }) {
       </Paper>
       <Dialog open={isSettingsOpen}>
         <DialogTitle>Profile</DialogTitle>
-        <DialogContent
-          sx={{ display: "flex", flexDirection: "column", gap: 1 }}
-        >
+        <DialogContent>
           <Box
-            component={"input"}
-            type={"file"}
-            sx={{
-              padding: 3,
-              border: "1px solid rgba(0, 0, 0, 0.23)",
-              borderRadius: 1,
-            }}
-          />
-          <TextField type={"text"} label="First Name" variant={"standard"} />
-          <TextField type={"text"} label="Last Name" variant={"standard"} />
-          <TextField type={"email"} label="Email" variant={"standard"} />
-          <TextField type={"password"} label="Password" variant={"standard"} />
+            sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+            component={"form"}
+            id="profile-form"
+            onSubmit={handleUpdateUser}
+          >
+            <Box
+              component={"input"}
+              name="profileImg"
+              // value={userDetails.profileImg}
+              onChange={handleChange}
+              type={"file"}
+              sx={{
+                padding: 3,
+                border: "1px solid rgba(0, 0, 0, 0.23)",
+                borderRadius: 1,
+              }}
+            />
+            <TextField
+              name="firstName"
+              value={draftUser.firstName}
+              onChange={handleChange}
+              type={"text"}
+              label="First Name"
+              variant={"standard"}
+            />
+            <TextField
+              name="lastName"
+              value={draftUser.lastName}
+              onChange={handleChange}
+              type={"text"}
+              label="Last Name"
+              variant={"standard"}
+            />
+            <TextField
+              name="email"
+              value={draftUser.email}
+              onChange={handleChange}
+              type={"email"}
+              label="Email"
+              variant={"standard"}
+            />
+            <TextField
+              name="password"
+              value={draftUser.password}
+              onChange={handleChange}
+              type={"password"}
+              label="Password"
+              variant={"standard"}
+            />
+          </Box>
         </DialogContent>
         <DialogActions>
           <Button
@@ -123,7 +175,7 @@ export default function Header({ className }) {
           >
             Cancel
           </Button>
-          <Button variant={"contained"} type="button">
+          <Button form="profile-form" variant={"contained"} type="submit">
             Save Changes
           </Button>
         </DialogActions>
