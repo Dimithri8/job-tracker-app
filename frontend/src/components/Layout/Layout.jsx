@@ -12,19 +12,21 @@ import "./Layout.css";
 export default function Layout() {
   return (
     <Box className="layout-wrapper">
-      <Header className="header" />
       <Sidebar className="sidebar" />
-      <Box
-        component={"div"}
-        sx={{ backgroundColor: "#F8F8F8" }}
-        className="content-wrapper"
-      >
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/jobs" element={<Jobs />} />
-          <Route path="/interviews" element={<Interviews />} />
-          <Route path="/analytics" element={<Analytics />} />
-        </Routes>
+      <Box className="main-content">
+        <Header className="header" />
+        <Box
+          component={"div"}
+          sx={{ backgroundColor: "#F8F8F8" }}
+          className="content-wrapper"
+        >
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/jobs" element={<Jobs />} />
+            <Route path="/interviews" element={<Interviews />} />
+            <Route path="/analytics" element={<Analytics />} />
+          </Routes>
+        </Box>
       </Box>
     </Box>
   );
