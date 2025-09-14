@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_SERCRET;
+const JWT_SECRET = process.env.JWT_SECRET;
 
 export default function protect(req, res, next) {
   const token = req.headers.authorization?.split(" ")[1];
