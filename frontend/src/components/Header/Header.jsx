@@ -9,17 +9,18 @@ import {
 } from "@mui/material";
 
 export default function Header({ className }) {
+  const savedUser = JSON.parse(localStorage.getItem("user"));
   const [isExpand, setIsExpand] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const user = {
-    profileImg: "src/assets/images/profile-img.avif",
-    firstName: "Dimithri",
-    lastName: "Dananjaya",
-    email: "dimithridananjaya924@gmail.com",
-    password: "dimithri.123",
-  };
-  const [userDetails, setUserDetails] = useState(user);
-  const [draftUser, setDraftUser] = useState(user);
+  // const user = {
+  //   profileImg: "src/assets/images/profile-img.avif",
+  //   firstName: "Dimithri",
+  //   lastName: "Dananjaya",
+  //   email: "dimithridananjaya924@gmail.com",
+  //   password: "dimithri.123",
+  // };
+  const [userDetails, setUserDetails] = useState(savedUser);
+  const [draftUser, setDraftUser] = useState(savedUser);
 
   function handleProfileViewExpand() {
     setIsExpand((prevValue) => !prevValue);
