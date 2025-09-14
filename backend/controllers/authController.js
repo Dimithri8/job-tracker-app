@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import { createToken } from "../utils/jwt.js";
@@ -6,16 +9,18 @@ export const registerUser = async (req, res) => {
   try {
     const { firstName, lastName, email, password } = req.body;
 
-    const existingUser = User.findOne({ email });
+    const existingUser = await User.findOne({ email });
     if (existingUser)
       return res.status(400).json({ message: "User already exist with email" });
 
-    const user = User.create({ firstName, lastName, email, password });
+    const user = await User.create({ firstName, lastName, email, password });
     const token = createToken(user);
 
-    res
-      .status(201)
-      .json({ token, user: { id: user._id, firstName, lastName, email } });
+    res.status(201).json({
+      message: "Account created successfully",
+      token,
+      user: { id: user._id, firstName, lastName, email },
+    });
   } catch (error) {
     res.status(500).json({
       message: "Unable to create account right now, please try again shortly",
