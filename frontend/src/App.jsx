@@ -6,6 +6,7 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import Jobs from "./pages/Jobs/Jobs";
 import Interviews from "./pages/Interviews/Interviews";
 import Analytics from "./pages/Analytics/Analytics";
+import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 function App() {
   return (
     <Routes>
@@ -13,7 +14,14 @@ function App() {
       <Route path="/register" element={<Register />} />
 
       <Route path="/" element={<Layout />}>
-        <Route index element={<Dashboard />} />
+        <Route
+          index
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        />
         <Route path="jobs" element={<Jobs />} />
         <Route path="interviews" element={<Interviews />} />
         <Route path="analytics" element={<Analytics />} />
