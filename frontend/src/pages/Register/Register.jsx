@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Box, TextField, Button, Typography } from "@mui/material";
 
 export default function Register() {
+  const navigate = useNavigate();
   const [user, setUser] = useState({
     firstName: "",
     lastName: "",
@@ -14,14 +15,31 @@ export default function Register() {
     const { name, value } = event.target;
     setUser((prevValues) => ({ ...prevValues, [name]: value }));
   }
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    console.log(
-      `${user.firstName} ${user.lastName} ${user.email} ${user.password}`
-    );
+    try {
+      const response = await fetch(`http://localhost:5000/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+      });
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        console.log("navigating to dashboard");
+        navigate("/");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+
     setUser({ firstName: "", lastName: "", email: "", password: "" });
   }
-  const navigate = useNavigate();
+
   function handleClick() {
     navigate(`/login`);
   }
