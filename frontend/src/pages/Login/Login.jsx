@@ -13,9 +13,21 @@ export default function Login() {
     const { name, value } = event.target;
     setUser((prevValues) => ({ ...prevValues, [name]: value }));
   }
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    console.log(`${user.email} ${user.password}`);
+    const response = await fetch(`http://localhost:5000/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    });
+    const data = await response.json();
+    if (response.ok) {
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      navigate("/");
+    }
     setUser({ email: "", password: "" });
   }
 
