@@ -1,5 +1,5 @@
 import { Box, Button, Typography } from "@mui/material";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import SpaceDashboardOutlinedIcon from "@mui/icons-material/SpaceDashboardOutlined";
 import WorkOutlineOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined";
 import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
@@ -7,7 +7,13 @@ import LeaderboardOutlinedIcon from "@mui/icons-material/LeaderboardOutlined";
 import LogoutIcon from "@mui/icons-material/Logout";
 import "./Sidebar.css";
 
-export default function Sidebar({ className, handleLogout }) {
+export default function Sidebar({ className }) {
+  const navigate = useNavigate();
+  function handleLogout() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/login");
+  }
   return (
     <Box
       className={className}
