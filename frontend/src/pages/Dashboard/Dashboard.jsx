@@ -1,11 +1,38 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 import Todo from "../../components/Todo/Todo";
 import MetricCard from "../../components/MetricCard/MetricCard";
 
 export default function Dashboard() {
+  const token = localStorage.getItem("token");
   const [todo, setTodo] = useState("");
   const [allTodos, setAllTodos] = useState([]);
+  const [analytics, setAnalytics] = useState({
+    rejectedJobCount: 0,
+    offersJobCount: 0,
+    interviewJobCount: 0,
+    appliedJobCount: 0,
+    totalJobsApplied: 0,
+    totalInterviews: 0,
+    applicationsByMonth: [],
+  });
+  useEffect(() => {
+    async function getAnalytics() {
+      const response = await fetch(`http://localhost:5000/analytics`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setAnalytics(data);
+      } else {
+        console.error(data.error);
+      }
+    }
+    getAnalytics();
+  }, []);
 
   function handleChange(event) {
     const userInput = event.target.value;
@@ -30,10 +57,16 @@ export default function Dashboard() {
         component={"div"}
         sx={{ display: "flex", gap: 2, justifyContent: "flex-start", mt: 2 }}
       >
-        <MetricCard label={"Total Applications"} value={5} />
-        <MetricCard label={"Total Interviews"} value={5} />
-        <MetricCard label={"Offers"} value={5} />
-        <MetricCard label={"Rejections"} value={5} />
+        <MetricCard
+          label={"Total Applications"}
+          value={analytics.totalJobsApplied}
+        />
+        <MetricCard
+          label={"Total Interviews"}
+          value={analytics.totalInterviews}
+        />
+        <MetricCard label={"Offers"} value={analytics.offersJobCount} />
+        <MetricCard label={"Rejections"} value={analytics.rejectedJobCount} />
       </Box>
       <Box
         component={"div"}
