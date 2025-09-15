@@ -2,7 +2,8 @@ import Job from "../models/Job.js";
 
 export const createJob = async (req, res) => {
   try {
-    const { company, title, date, type, status, location, notes } = req.body;
+    const { company, title, appliedDate, type, status, location, notes } =
+      req.body;
 
     const existingJob = await Job.findOne({
       user: req.user.id,
@@ -16,7 +17,7 @@ export const createJob = async (req, res) => {
       user: req.user.id,
       title,
       company,
-      appliedDate: date,
+      appliedDate,
       type,
       status,
       location,
@@ -48,11 +49,12 @@ export const getJobs = async (req, res) => {
 
 export const updateJob = async (req, res) => {
   try {
-    const { company, title, date, type, status, location, notes } = req.body;
+    const { company, title, appliedDate, type, status, location, notes } =
+      req.body;
 
     const updatedJob = await Job.findOneAndUpdate(
       { _id: req.params.id, user: req.user.id },
-      { company, title, appliedDate: date, type, status, location, notes },
+      { company, title, appliedDate, type, status, location, notes },
       { new: true }
     );
     if (!updatedJob) return res.status(404).json({ message: "No job found" });
