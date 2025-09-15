@@ -2,7 +2,8 @@ import Interview from "../models/Interview.js";
 
 export const createInterview = async (req, res) => {
   try {
-    const { company, title, interviewDate, type, status } = req.body;
+    const { company, title, date, time, type, status } = req.body;
+    const interviewDate = new Date(`${date}T${time}`);
     const existingInterview = await Interview.findOne({
       user: req.user.id,
       title,
@@ -33,7 +34,8 @@ export const createInterview = async (req, res) => {
 
 export const updateInterview = async (req, res) => {
   try {
-    const { company, title, interviewDate, type, status } = req.body;
+    const { company, title, date, time, type, status } = req.body;
+    const interviewDate = new Date(`${date}T${time}`);
     const updatedInterview = await Interview.findOneAndUpdate(
       {
         _id: req.params.id,
@@ -42,14 +44,14 @@ export const updateInterview = async (req, res) => {
       {
         company,
         title,
-        interviewDate,
+        interviewDate: interviewDate,
         type,
         status,
       },
       { new: true }
     );
 
-    if (!updateInterview)
+    if (!updatedInterview)
       return res.status(404).json({ message: "Unable to find interview" });
 
     res.status(200).json({
@@ -92,13 +94,11 @@ export const getInterviews = async (req, res) => {
     const interviews = await Interview.find({ user: req.user.id });
     if (!interviews)
       return res.status(404).json({ message: "You don't have any interviews" });
-    res.send(interviews);
+    res.status(200).json({ interviews });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: "Server error, unable to get interviews",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: "Server error, unable to get interviews",
+      error: error.message,
+    });
   }
 };
