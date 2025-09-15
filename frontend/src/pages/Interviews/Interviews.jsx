@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -28,6 +28,7 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 
 export default function Interviews() {
+  const token = localStorage.getItem("token");
   const status = ["Scheduled", "Cancelled", "Completed"];
   const [isOpen, setIsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -42,6 +43,31 @@ export default function Interviews() {
   const [allInterviews, setAllInterviews] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(2);
+
+  useEffect(() => {
+    async function getInterviews() {
+      const response = await fetch(`http://localhost:5000/interviews/`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      if (response.ok) {
+        const formattedInterviews = data.interviews.map((interview) => {
+          const interviewDate = new Date(interview.interviewDate);
+          return {
+            ...interview,
+            date: interviewDate.toISOString().split("T")[0],
+            time: interviewDate.toISOString().split("T")[1].substring(0, 5),
+          };
+        });
+
+        setAllInterviews(formattedInterviews);
+      }
+    }
+    getInterviews();
+  }, []);
 
   const paginatedInterviews = allInterviews.slice(
     page * rowsPerPage,
@@ -58,15 +84,39 @@ export default function Interviews() {
 
   function handleOpenForm() {
     setIsEditing(false);
+    setInterview({
+      company: "",
+      title: "",
+      date: "",
+      time: "",
+      type: "",
+      status: "",
+    });
     setIsOpen(true);
   }
   function handleCloseForm() {
     setIsOpen(false);
   }
-  function handleDelete(id) {
-    setAllInterviews((prevValues) =>
-      prevValues.filter((item, index) => index !== id)
-    );
+  async function handleDelete(item) {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/interviews/${item._id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.ok) {
+        setAllInterviews((prevValues) =>
+          prevValues.filter((interview) => interview._id !== item._id)
+        );
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }
   function handleEdit(item) {
     setIsEditing(true);
@@ -77,16 +127,60 @@ export default function Interviews() {
     const { name, value } = event.target;
     setInterview((prevValue) => ({ ...prevValue, [name]: value }));
   }
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     if (isEditing) {
-      setAllInterviews((prevValues) =>
-        prevValues.map((item) =>
-          item.title === interview.title ? { ...interview } : item
-        )
+      const response = await fetch(
+        `http://localhost:5000/interviews/${interview._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+
+          body: JSON.stringify(interview),
+        }
       );
+      const data = await response.json();
+      if (response.ok) {
+        const interviewDate = new Date(data.interview.interviewDate);
+        const formattedInterview = {
+          ...data.interview,
+          date: interviewDate.toISOString().split("T")[0],
+          time: interviewDate.toISOString().split("T")[1].substring(0, 5),
+        };
+        setAllInterviews((prevValues) =>
+          prevValues.map((item) =>
+            item._id === formattedInterview._id
+              ? { ...formattedInterview }
+              : item
+          )
+        );
+      }
     } else {
-      setAllInterviews((prevInterviews) => [...prevInterviews, interview]);
+      const response = await fetch(`http://localhost:5000/interviews`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(interview),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        alert(data.message);
+        const interviewDate = new Date(data.interview.interviewDate);
+        const formattedInterview = {
+          ...data.interview,
+          date: interviewDate.toISOString().split("T")[0],
+          time: interviewDate.toISOString().split("T")[1].substring(0, 5),
+        };
+        setAllInterviews((prevInterviews) => [
+          ...prevInterviews,
+          formattedInterview,
+        ]);
+      }
     }
     setInterview({
       company: "",
@@ -139,8 +233,8 @@ export default function Interviews() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedInterviews.map((item, index) => (
-              <TableRow key={index}>
+            {paginatedInterviews.map((item) => (
+              <TableRow key={item._id}>
                 <TableCell>{item.company}</TableCell>
                 <TableCell>{item.title}</TableCell>
                 <TableCell>{item.date}</TableCell>
@@ -156,7 +250,7 @@ export default function Interviews() {
                     Edit
                   </Button>
                   <Button
-                    onClick={() => handleDelete(index)}
+                    onClick={() => handleDelete(item)}
                     variant={"outlined"}
                     type={"button"}
                     color={"error"}
