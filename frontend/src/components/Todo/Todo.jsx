@@ -17,6 +17,7 @@ export default function Todo({
   handleChange,
   handleAddTodo,
   handleDelete,
+  handleCheck,
   allTodos,
   todo,
 }) {
@@ -37,7 +38,7 @@ export default function Todo({
           variant={"standard"}
           placeholder="Add Todo"
           name="todo"
-          value={todo}
+          value={todo.text}
           onChange={handleChange}
         />
         <Button size={"small"} type={"submit"} variant={"contained"}>
@@ -57,9 +58,12 @@ export default function Todo({
             }
           >
             <ListItemIcon>
-              <Checkbox />
+              <Checkbox
+                checked={item.isChecked}
+                onChange={() => handleCheck(item)}
+              />
             </ListItemIcon>
-            <ListItemText primary={item} />
+            <ListItemText primary={item.text} />
           </ListItem>
         ))}
       </List>
