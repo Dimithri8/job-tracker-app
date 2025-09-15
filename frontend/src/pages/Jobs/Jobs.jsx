@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -22,6 +22,7 @@ import {
   FormControl,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+
 export default function Jobs() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -38,6 +39,7 @@ export default function Jobs() {
   const [isEditing, setIsEditing] = useState(false);
 
   const status = ["Applied", "Interview", "Offer", "Reject"];
+  const token = localStorage.getItem("token");
 
   function handleChangePage(event, newPage) {
     setPage(newPage);
@@ -48,26 +50,91 @@ export default function Jobs() {
   }
   function handleOpenForm() {
     setIsEditing(false);
+    setJob({
+      title: "",
+      company: "",
+      appliedDate: "",
+      status: "",
+      location: "",
+      notes: "",
+    });
     setIsOpen(true);
   }
   function handleCloseForm() {
     setIsOpen(false);
   }
+  useEffect(() => {
+    async function getJobs() {
+      const response = await fetch(`http://localhost:5000/jobs`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+
+      if (response.ok) {
+        const formattedData = data.map((job) => ({
+          ...job,
+          appliedDate: job.appliedDate ? job.appliedDate.split("T")[0] : job,
+        }));
+        setJobsApplied(formattedData);
+      }
+    }
+    getJobs();
+  }, []);
   function handleChange(event) {
     const { name, value } = event.target;
     setJob((prevValue) => ({ ...prevValue, [name]: value }));
-    console.log(job);
   }
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     if (isEditing) {
-      setJobsApplied((prevJobs) =>
-        prevJobs.map((item) => (item.title === job.title ? { ...job } : item))
-      );
+      const response = await fetch(`http://localhost:5000/jobs/${job._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(job),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        const formattedJob = {
+          ...data.job,
+          appliedDate: data.job.appliedDate
+            ? data.job.appliedDate.split("T")[0]
+            : "",
+        };
+        setJobsApplied((prevJobs) =>
+          prevJobs.map((item) =>
+            item._id === formattedJob._id ? { ...formattedJob } : item
+          )
+        );
+      }
     } else {
-      setJobsApplied((prevJobs) => [...prevJobs, job]);
+      const response = await fetch(`http://localhost:5000/jobs`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(job),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        alert(data.message);
+        if (response.ok) {
+          const formattedJob = {
+            ...data.job,
+            appliedDate: data.job.appliedDate
+              ? data.job.appliedDate.split("T")[0]
+              : "",
+          };
+          setJobsApplied((prevJobs) => [...prevJobs, formattedJob]);
+        }
+      }
     }
-
     setJob({
       title: "",
       company: "",
@@ -78,8 +145,27 @@ export default function Jobs() {
     });
     setIsOpen(false);
   }
-  function handleDelete(index) {
-    setJobsApplied((prevJobs) => prevJobs.filter((item, id) => id !== index));
+  async function handleDelete(item) {
+    try {
+      const response = await fetch(`http://localhost:5000/jobs/${item._id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        setJobsApplied((prevValues) =>
+          prevValues.filter((job) => job._id !== item._id)
+        );
+      } else {
+        const data = await response.json();
+        console.error(data.error);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }
   function handleEdit(item) {
     setIsEditing(true);
@@ -130,8 +216,8 @@ export default function Jobs() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedJobs.map((item, index) => (
-              <TableRow key={index}>
+            {paginatedJobs.map((item) => (
+              <TableRow key={item._id}>
                 <TableCell>{item.title}</TableCell>
                 <TableCell>{item.company}</TableCell>
                 <TableCell>{item.appliedDate}</TableCell>
@@ -146,7 +232,7 @@ export default function Jobs() {
                     Edit
                   </Button>
                   <Button
-                    onClick={() => handleDelete(index)}
+                    onClick={() => handleDelete(item)}
                     variant={"outlined"}
                     type={"button"}
                     color={"error"}
@@ -218,7 +304,6 @@ export default function Jobs() {
                 labelId="status-label"
                 label="Status"
                 variant={"outlined"}
-                defaultValue={"Applied"}
                 value={job.status}
                 onChange={handleChange}
               >
