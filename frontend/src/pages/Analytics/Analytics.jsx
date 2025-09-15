@@ -1,40 +1,56 @@
+import { useEffect, useState } from "react";
 import { Box, Typography, Paper } from "@mui/material";
 import { PieChart, BarChart } from "@mui/x-charts";
 import MetricCard from "../../components/MetricCard/MetricCard";
 
 export default function Analytics() {
-  const jobAppliedData = [
-    { month: "Jan", value: 5 },
-    { month: "Feb", value: 8 },
-    { month: "Mar", value: 12 },
-    { month: "Apr", value: 7 },
-    { month: "May", value: 10 },
-    { month: "Jun", value: 6 },
-    { month: "Jul", value: 9 },
-    { month: "Aug", value: 14 },
-    { month: "Sep", value: 11 },
-    { month: "Oct", value: 13 },
-    { month: "Nov", value: 7 },
-    { month: "Dec", value: 15 },
-  ];
+  const [analytics, setAnalytics] = useState({
+    rejectedJobCount: 0,
+    offersJobCount: 0,
+    interviewJobCount: 0,
+    appliedJobCount: 0,
+    totalJobsApplied: 0,
+    totalInterviews: 0,
+    applicationsByMonth: [],
+  });
+
   const applicationStatus = [
     {
       label: "Applied",
-      value: 20,
+      value: analytics.totalJobsApplied,
     },
     {
       label: "Interview",
-      value: 10,
+      value: analytics.totalInterviews,
     },
     {
       label: "Offer",
-      value: 3,
+      value: analytics.offersJobCount,
     },
     {
       label: "Rejected",
-      value: 12,
+      value: analytics.rejectedJobCount,
     },
   ];
+  const token = localStorage.getItem("token");
+  useEffect(() => {
+    async function getAnalytics() {
+      const response = await fetch(`http://localhost:5000/analytics`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setAnalytics(data);
+      } else {
+        console.error(data.error);
+      }
+    }
+    getAnalytics();
+  }, []);
+
   return (
     <Box component={"section"} sx={{ m: 2 }}>
       <Box component={"div"}>
@@ -49,10 +65,16 @@ export default function Analytics() {
         component={"div"}
         sx={{ display: "flex", gap: 2, justifyContent: "flex-start", mt: 2 }}
       >
-        <MetricCard label={"Total Applications"} value={5} />
-        <MetricCard label={"Total Interviews"} value={5} />
-        <MetricCard label={"Offers"} value={5} />
-        <MetricCard label={"Rejections"} value={5} />
+        <MetricCard
+          label={"Total Applications"}
+          value={analytics.totalJobsApplied}
+        />
+        <MetricCard
+          label={"Total Interviews"}
+          value={analytics.totalInterviews}
+        />
+        <MetricCard label={"Offers"} value={analytics.offersJobCount} />
+        <MetricCard label={"Rejections"} value={analytics.rejectedJobCount} />
       </Box>
       <Box
         component={"div"}
@@ -71,16 +93,32 @@ export default function Analytics() {
             Jobs Applied Overview
           </Typography>
           <Box component={"div"}>
-            <BarChart
-              series={[{ data: jobAppliedData.map((item) => item.value) }]}
-              xAxis={[
-                {
-                  scaleType: "band",
-                  data: jobAppliedData.map((item) => item.month),
-                },
-              ]}
-              height={300}
-            />
+            {analytics.applicationsByMonth.length > 0 && (
+              <BarChart
+                series={[
+                  {
+                    data: analytics.applicationsByMonth.map(
+                      (item) => item.count
+                    ),
+                  },
+                ]}
+                xAxis={[
+                  {
+                    scaleType: "band",
+                    data: analytics.applicationsByMonth.map(
+                      (item) => item.month
+                    ),
+                  },
+                ]}
+                yAxis={[
+                  {
+                    min: 0,
+                    max: 5,
+                  },
+                ]}
+                height={300}
+              />
+            )}
           </Box>
         </Box>
         <Box component={Paper} sx={{ p: 2 }}>
