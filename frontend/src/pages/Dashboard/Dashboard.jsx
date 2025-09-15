@@ -5,7 +5,7 @@ import MetricCard from "../../components/MetricCard/MetricCard";
 
 export default function Dashboard() {
   const token = localStorage.getItem("token");
-  const [todo, setTodo] = useState("");
+  const [todo, setTodo] = useState({ text: "", isChecked: false });
   const [allTodos, setAllTodos] = useState([]);
   const [analytics, setAnalytics] = useState({
     rejectedJobCount: 0,
@@ -35,17 +35,28 @@ export default function Dashboard() {
   }, []);
 
   function handleChange(event) {
-    const userInput = event.target.value;
-    setTodo(userInput);
+    setTodo((prevValues) => ({ ...prevValues, text: event.target.value }));
   }
   function handleAddTodo(e) {
     e.preventDefault();
-    setAllTodos((prevItems) => [...prevItems, todo]);
-    setTodo("");
+    setAllTodos((prevItems) => [
+      ...prevItems,
+      { text: todo.text, isChecked: false },
+    ]);
+    setTodo({ text: "", isChecked: false });
   }
   function handleDelete(deleteItem) {
     setAllTodos((prevValues) =>
-      prevValues.filter((item) => item !== deleteItem)
+      prevValues.filter((item) => item.text !== deleteItem.text)
+    );
+  }
+  function handleCheck(checkedItem) {
+    setAllTodos((prevValues) =>
+      prevValues.map((item) =>
+        item.text === checkedItem.text
+          ? { ...item, isChecked: !item.isChecked }
+          : item
+      )
     );
   }
   return (
@@ -83,6 +94,7 @@ export default function Dashboard() {
           handleAddTodo={handleAddTodo}
           handleChange={handleChange}
           handleDelete={handleDelete}
+          handleCheck={handleCheck}
         />
       </Box>
     </Box>
