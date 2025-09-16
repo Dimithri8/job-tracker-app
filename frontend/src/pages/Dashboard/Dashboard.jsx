@@ -34,30 +34,87 @@ export default function Dashboard() {
     getAnalytics();
   }, []);
 
+  useEffect(() => {
+    async function getTodos() {
+      const response = await fetch(`http://localhost:5000/todos`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setAllTodos(data.todos);
+      }
+    }
+    getTodos();
+  }, []);
+
   function handleChange(event) {
     setTodo((prevValues) => ({ ...prevValues, text: event.target.value }));
   }
-  function handleAddTodo(e) {
+  async function handleAddTodo(e) {
     e.preventDefault();
-    setAllTodos((prevItems) => [
-      ...prevItems,
-      { text: todo.text, isChecked: false },
-    ]);
+    const response = await fetch(`http://localhost:5000/todos`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(todo),
+    });
+    const data = await response.json();
+    if (response.ok) {
+      alert(data.message);
+      setAllTodos((prevItems) => [...prevItems, data.todo]);
+    }
+
     setTodo({ text: "", isChecked: false });
   }
-  function handleDelete(deleteItem) {
-    setAllTodos((prevValues) =>
-      prevValues.filter((item) => item.text !== deleteItem.text)
+  async function handleDelete(deleteItem) {
+    const response = await fetch(
+      `http://localhost:5000/todos/${deleteItem._id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
+    const data = await response.json();
+    if (response.ok) {
+      alert(data.message);
+      setAllTodos((prevValues) =>
+        prevValues.filter((item) => item._id !== deleteItem._id)
+      );
+    }
   }
-  function handleCheck(checkedItem) {
-    setAllTodos((prevValues) =>
-      prevValues.map((item) =>
-        item.text === checkedItem.text
-          ? { ...item, isChecked: !item.isChecked }
-          : item
-      )
+  async function handleCheck(checkedItem) {
+    const updated = { isChecked: !checkedItem.isChecked };
+    const response = await fetch(
+      `http://localhost:5000/todos/${checkedItem._id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(updated),
+      }
     );
+    const data = await response.json();
+    if (response.ok) {
+      setAllTodos((prevValues) =>
+        prevValues.map((item) =>
+          item._id === checkedItem._id
+            ? { ...item, isChecked: updated.isChecked }
+            : item
+        )
+      );
+    } else {
+      console.error(data.error);
+    }
   }
   return (
     <Box component={"section"} sx={{ m: 2 }}>
