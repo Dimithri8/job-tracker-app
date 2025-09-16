@@ -47,10 +47,10 @@ export default function Todo({
       </Box>
 
       <List>
-        {allTodos.map((item, index) => (
+        {allTodos.map((item) => (
           <ListItem
             disablePadding
-            key={index}
+            key={item._id}
             secondaryAction={
               <IconButton edge="end" onClick={() => handleDelete(item)}>
                 <DeleteOutlineIcon />
