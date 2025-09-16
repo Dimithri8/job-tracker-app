@@ -27,7 +27,7 @@ export default function Todo({
         Quick Todo
       </Typography>
       <Typography variant={"body1"} sx={{ fontSize: 13, fontWeight: 400 }}>
-        Todos will be removed after 24 hours
+        List your high priority tasks and get them done.
       </Typography>
       <Box
         component={"form"}
