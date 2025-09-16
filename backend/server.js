@@ -8,6 +8,7 @@ import jobRoutes from "./routes/jobRoutes.js";
 import interviewRoutes from "./routes/interviewRoutes.js";
 import analyticsRoutes from "./routes/analyticsRoutes.js";
 import todoRoutes from "./routes/todoRoutes.js";
+import updateUser from "./routes/updateUserRoutes.js";
 
 connectDb();
 
@@ -16,6 +17,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/auth", authRoutes);
+app.use("/update-user", updateUser);
 app.use("/jobs", jobRoutes);
 app.use("/interviews", interviewRoutes);
 app.use("/analytics", analyticsRoutes);
