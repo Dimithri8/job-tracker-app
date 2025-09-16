@@ -10,6 +10,7 @@ import {
 
 export default function Header({ className }) {
   const savedUser = JSON.parse(localStorage.getItem("user"));
+  const token = localStorage.getItem("token");
   const [isExpand, setIsExpand] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
@@ -28,13 +29,42 @@ export default function Header({ className }) {
     setIsExpand();
   }
   function handleChange(event) {
-    const { name, value } = event.target;
-    setDraftUser((prevDetails) => ({ ...prevDetails, [name]: value }));
+    const { name, value, files } = event.target;
+    if (name === "profileImg" && files.length > 0) {
+      setDraftUser((prevDetails) => ({ ...prevDetails, profileImg: files[0] }));
+    } else {
+      setDraftUser((prevDetails) => ({ ...prevDetails, [name]: value }));
+    }
   }
-  function handleUpdateUser(e) {
+  async function handleUpdateUser(e) {
     e.preventDefault();
-    setUserDetails(draftUser);
-    handleExitSettings();
+
+    const formData = new FormData();
+    formData.append("firstName", draftUser.firstName);
+    formData.append("lastName", draftUser.lastName);
+    formData.append("email", draftUser.email);
+    if (draftUser.password) formData.append("password", draftUser.password);
+    if (draftUser.profileImg instanceof File) {
+      formData.append("profileImg", draftUser.profileImg);
+    }
+
+    const response = await fetch(`http://localhost:5000/update-user`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
+    const data = await response.json();
+    if (response.ok) {
+      localStorage.setItem("user", JSON.stringify(data.user));
+      setUserDetails(data.user);
+      setDraftUser(data.user);
+      alert(data.message);
+      handleExitSettings();
+    } else {
+      console.error(data.message);
+    }
   }
   return (
     <>
@@ -65,7 +95,11 @@ export default function Header({ className }) {
         >
           <Box
             component={"img"}
-            src={userDetails.profileImg}
+            src={
+              draftUser.profileImg instanceof File
+                ? URL.createObjectURL(draftUser.profileImg)
+                : draftUser.profileImg
+            }
             sx={{
               height: 40,
               width: 40,
